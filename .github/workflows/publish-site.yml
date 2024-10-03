@@ -40,13 +40,14 @@ jobs:
           mkdocs --version
 
       - name: Checkout gh-pages branch
-        run: |
-          git fetch origin gh-pages
-          git checkout gh-pages
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: gh-pages
 
-      - name: Copy search.html to gh-pages
+      - name: Copy search.html from master to gh-pages
         run: |
-          cp search.html ./search.html
+          git checkout master -- search.html
           git add search.html
           git commit -m "Add search.html to gh-pages"
 
