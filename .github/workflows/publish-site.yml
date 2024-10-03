@@ -9,10 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (main branch)
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: main
 
       - uses: actions/setup-python@v4
         with:
@@ -45,12 +46,15 @@ jobs:
           fetch-depth: 0
           ref: gh-pages
 
-      - name: Copy search.html from master to gh-pages
+      - name: Download search.html
         run: |
-          git checkout master -- search.html
-          git add search.html
-          git commit -m "Add search.html to gh-pages"
+          curl -o search.html https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/refs/heads/gh-pages/search.html
 
+      - name: Commit search.html to gh-pages
+        run: |
+          git add search.html
+          git commit -m "Add search.html from external source"
+          
       - name: Push changes to gh-pages
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
